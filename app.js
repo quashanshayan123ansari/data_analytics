@@ -536,9 +536,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const qUpper = query.toUpperCase();
         const matches = [];
 
-        // 1. Check Local Verified Database First
+        // 1. Check Local Verified Database First with broader match (ticker, name, sector, exchange, region)
         Object.values(COMPANY_DATABASE).forEach(comp => {
-            if (comp.ticker.toUpperCase().includes(qUpper) || comp.name.toUpperCase().includes(qUpper) || comp.sector.toUpperCase().includes(qUpper)) {
+            const searchHaystack = `${comp.ticker} ${comp.name} ${comp.sector} ${comp.exchange || ''} ${comp.desc || ''}`.toUpperCase();
+            const isIndiaQuery = (qUpper.includes('INDIA') || qUpper.includes('NSE') || qUpper.includes('BSE')) && (comp.ticker.endsWith('.NS') || (comp.exchange && comp.exchange.includes('India')));
+
+            if (searchHaystack.includes(qUpper) || isIndiaQuery) {
                 matches.push({
                     ticker: comp.ticker,
                     name: comp.name,
@@ -1368,6 +1371,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+    }
+
+    // ----------------- THEME TOGGLE ENGINE -----------------
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.body.removeAttribute('data-theme');
+                themeToggleBtn.innerHTML = `<i class="fa-solid fa-moon"></i> Dark Mode`;
+                localStorage.setItem('apexTheme', 'light');
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                themeToggleBtn.innerHTML = `<i class="fa-solid fa-sun"></i> Light Mode`;
+                localStorage.setItem('apexTheme', 'dark');
+            }
+        });
+
+        // Initialize Theme (Default to Light Mode as requested)
+        const savedTheme = localStorage.getItem('apexTheme');
+        if (savedTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            themeToggleBtn.innerHTML = `<i class="fa-solid fa-sun"></i> Light Mode`;
+        } else {
+            document.body.removeAttribute('data-theme');
+            themeToggleBtn.innerHTML = `<i class="fa-solid fa-moon"></i> Dark Mode`;
+        }
     }
 
     // INITIAL LOAD

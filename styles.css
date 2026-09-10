@@ -2,7 +2,38 @@
    APEX INSTITUTIONAL FINANCIAL MODELING & DATA ANALYTICS DASHBOARD STYLES
    ========================================================================== */
 
+/* DEFAULT LIGHT THEME DESIGN */
 :root {
+    --bg-dark: #f8fafc;
+    --bg-navbar: rgba(255, 255, 255, 0.9);
+    --bg-card: #ffffff;
+    --bg-card-hover: #f1f5f9;
+    --border-color: #e2e8f0;
+    --border-highlight: rgba(2, 132, 199, 0.35);
+    
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --text-dim: #64748b;
+    
+    --cyan: #0284c7;
+    --cyan-glow: rgba(2, 132, 199, 0.15);
+    --emerald: #059669;
+    --emerald-glow: rgba(5, 150, 105, 0.15);
+    --purple: #6d28d9;
+    --rose: #e11d48;
+    --amber: #d97706;
+    
+    --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* OPTIONAL DARK THEME OVERRIDE */
+[data-theme="dark"] {
     --bg-dark: #070a12;
     --bg-navbar: rgba(13, 18, 30, 0.85);
     --bg-card: rgba(17, 24, 39, 0.7);
@@ -21,13 +52,7 @@
     --purple: #818cf8;
     --rose: #fb7185;
     --amber: #fbbf24;
-    
-    --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --radius-sm: 6px;
-    --radius-md: 12px;
-    --radius-lg: 18px;
-    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -39,14 +64,15 @@
 body {
     background-color: var(--bg-dark);
     background-image: 
-        radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.05) 0%, transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(129, 140, 248, 0.05) 0%, transparent 40%);
+        radial-gradient(circle at 15% 15%, rgba(2, 132, 199, 0.03) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(109, 40, 217, 0.03) 0%, transparent 40%);
     background-attachment: fixed;
     color: var(--text-main);
     font-family: var(--font-body);
     font-size: 14px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .app-container {
@@ -57,6 +83,9 @@ body {
 
 /* ----------------- TOP NAVBAR ----------------- */
 .navbar {
+    position: relative;
+    z-index: 1000;
+    overflow: visible;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -67,7 +96,7 @@ body {
     border-radius: var(--radius-md);
     padding: 14px 20px;
     margin-bottom: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-card);
 }
 
 .brand {
@@ -99,7 +128,7 @@ body {
     font-size: 20px;
     font-weight: 800;
     letter-spacing: 1.5px;
-    background: linear-gradient(135deg, #ffffff, var(--cyan));
+    background: linear-gradient(135deg, var(--text-main), var(--cyan));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -114,6 +143,7 @@ body {
 /* SEARCH BOX */
 .search-box {
     position: relative;
+    z-index: 1001;
     display: flex;
     align-items: center;
     flex: 1;
@@ -129,7 +159,7 @@ body {
 
 .search-box input {
     width: 100%;
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     padding: 10px 120px 10px 40px;
@@ -151,21 +181,20 @@ body {
     padding: 7px 16px;
 }
 
-/* SEARCH SUGGESTIONS DROPDOWN */
+/* SEARCH SUGGESTIONS DROPDOWN (FIXED OVERFLOW & Z-INDEX) */
 .search-suggestions-dropdown {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px);
     left: 0;
     right: 0;
-    margin-top: 6px;
-    background: rgba(15, 23, 42, 0.95);
+    background: var(--bg-card);
     backdrop-filter: blur(20px);
     border: 1px solid var(--border-highlight);
     border-radius: var(--radius-md);
-    max-height: 320px;
+    max-height: 380px;
     overflow-y: auto;
-    z-index: 1000;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 999999;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
     display: none;
 }
 
@@ -178,8 +207,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border-color);
     cursor: pointer;
     transition: var(--transition);
 }
@@ -189,7 +218,7 @@ body {
 }
 
 .suggestion-item:hover, .suggestion-item.active {
-    background: rgba(56, 189, 248, 0.15);
+    background: var(--bg-card-hover);
 }
 
 .sugg-info {
@@ -200,7 +229,7 @@ body {
 .sugg-name {
     font-weight: 600;
     color: var(--text-main);
-    font-size: 13px;
+    font-size: 13.5px;
 }
 
 .sugg-sub {
@@ -242,6 +271,8 @@ body {
 
 /* ----------------- COMPANY BANNER ----------------- */
 .company-banner {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: space-between;
