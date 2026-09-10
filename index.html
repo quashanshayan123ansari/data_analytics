@@ -27,11 +27,12 @@
                 </div>
             </div>
 
-            <!-- Search Bar -->
+            <!-- Search Bar with Live Search Autocomplete Dropdown -->
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="companySearchInput" placeholder="Search Company Name or Ticker (e.g., Apple, Nvidia, Tesla, Microsoft, Tata Motors, AAPL)..." value="Apple">
+                <input type="text" id="companySearchInput" placeholder="Type company name or ticker (e.g., Apple, Nvidia, Tesla, Reliance, AAPL)..." autocomplete="off" value="Apple">
                 <button id="searchBtn" class="btn-primary"><i class="fa-solid fa-bolt"></i> Analyze</button>
+                <div class="search-suggestions-dropdown" id="searchSuggestions"></div>
             </div>
 
             <div class="quick-tickers">

@@ -151,6 +151,69 @@ body {
     padding: 7px 16px;
 }
 
+/* SEARCH SUGGESTIONS DROPDOWN */
+.search-suggestions-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 6px;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-highlight);
+    border-radius: var(--radius-md);
+    max-height: 320px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+.search-suggestions-dropdown.show {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+.suggestion-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover, .suggestion-item.active {
+    background: rgba(56, 189, 248, 0.15);
+}
+
+.sugg-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.sugg-name {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 13px;
+}
+
+.sugg-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.sugg-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 /* QUICK TICKERS */
 .quick-tickers {
     display: flex;
