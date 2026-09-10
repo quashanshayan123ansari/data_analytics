@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex | Institutional Data Analytics & Financial Modeling Studio</title>
+    <meta name="description" content="Institutional-grade financial data dashboard, live company modeling suite, DCF sensitivity analysis, LBO sponsor model, M&A accretion, DuPont breakdown, Monte Carlo simulation, and data analytics studio.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation Bar -->
+        <header class="navbar">
+            <div class="brand">
+                <div class="logo-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <div class="brand-text">
+                    <span class="brand-name">APEX</span>
+                    <span class="brand-sub">Financial Intelligence & Analytics</span>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="companySearchInput" placeholder="Search Company Name or Ticker (e.g., Apple, Nvidia, Tesla, Microsoft, Tata Motors, AAPL)..." value="Apple">
+                <button id="searchBtn" class="btn-primary"><i class="fa-solid fa-bolt"></i> Analyze</button>
+            </div>
+
+            <div class="quick-tickers">
+                <span class="ticker-chip" data-ticker="AAPL">AAPL</span>
+                <span class="ticker-chip" data-ticker="NVDA">NVDA</span>
+                <span class="ticker-chip" data-ticker="TSLA">TSLA</span>
+                <span class="ticker-chip" data-ticker="MSFT">MSFT</span>
+                <span class="ticker-chip" data-ticker="AMZN">AMZN</span>
+                <span class="ticker-chip" data-ticker="RELIANCE.NS">RELIANCE</span>
+                <span class="ticker-chip" data-ticker="TATAMOTORS.NS">TATA MOTORS</span>
+            </div>
+        </header>
+
+        <!-- Main Banner with Active Company Header -->
+        <section class="company-banner" id="companyBanner">
+            <div class="company-info">
+                <div class="company-title-wrap">
+                    <h1 id="companyName">Apple Inc.</h1>
+                    <span class="badge badge-ticker" id="companyTicker">AAPL</span>
+                    <span class="badge badge-sector" id="companySector">Technology | Consumer Electronics</span>
+                </div>
+                <p id="companyDesc" class="company-desc">Designing, manufacturing, and marketing smartphones, personal computers, tablets, wearables, and accessories with global services ecosystem.</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-outline" id="exportPdfBtn"><i class="fa-solid fa-file-pdf"></i> Export Brief</button>
+                <button class="btn-outline" id="refreshDataBtn"><i class="fa-solid fa-rotate-right"></i> Live Refresh</button>
+            </div>
+        </section>
+
+        <!-- KPI Executive Grid -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label"><i class="fa-solid fa-tag"></i> Market Price</div>
+                <div class="kpi-value" id="kpiPrice">$185.85</div>
+                <div class="kpi-sub" id="kpiPriceChange"><span class="txt-success"><i class="fa-solid fa-caret-up"></i> +1.45%</span> Today</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label"><i class="fa-solid fa-building-columns"></i> Market Cap</div>
+                <div class="kpi-value" id="kpiMarketCap">$2.88 T</div>
+                <div class="kpi-sub">Shares Out: <span id="kpiShares">15.55 B</span></div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label"><i class="fa-solid fa-chart-pie"></i> Trailing P/E</div>
+                <div class="kpi-value" id="kpiPe">29.40x</div>
+                <div class="kpi-sub">Forward P/E: <span id="kpiForwardPe">26.80x</span></div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label"><i class="fa-solid fa-wave-square"></i> Beta (5Y)</div>
+                <div class="kpi-value" id="kpiBeta">1.28</div>
+                <div class="kpi-sub">Volatility Index</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label"><i class="fa-solid fa-coins"></i> Enterprise Value</div>
+                <div class="kpi-value" id="kpiEV">$2.94 T</div>
+                <div class="kpi-sub">EV/EBITDA: <span id="kpiEvEbitda">22.1x</span></div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label"><i class="fa-solid fa-money-bill-trend-up"></i> Free Cash Flow</div>
+                <div class="kpi-value" id="kpiFCF">$99.58 B</div>
+                <div class="kpi-sub">FCF Yield: <span id="kpiFcfYield">3.46%</span></div>
+            </div>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="tab-overview"><i class="fa-solid fa-chart-area"></i> Overview & Price</button>
+            <button class="tab-btn" data-tab="tab-statements"><i class="fa-solid fa-file-invoice-dollar"></i> 3-Statement Model</button>
+            <button class="tab-btn" data-tab="tab-dcf"><i class="fa-solid fa-arrow-trend-up"></i> DCF Valuation & 2D Matrix</button>
+            <button class="tab-btn" data-tab="tab-lbo"><i class="fa-solid fa-handshake-simple"></i> LBO Sponsor Returns</button>
+            <button class="tab-btn" data-tab="tab-ma"><i class="fa-solid fa-link"></i> M&A Accretion/Dilution</button>
+            <button class="tab-btn" data-tab="tab-dupont"><i class="fa-solid fa-magnifying-glass-chart"></i> DuPont ROE Analysis</button>
+            <button class="tab-btn" data-tab="tab-monte-carlo"><i class="fa-solid fa-dice"></i> Monte Carlo Risk Engine</button>
+            <button class="tab-btn" data-tab="tab-options"><i class="fa-solid fa-chess-queen"></i> Black-Scholes Options</button>
+            <button class="tab-btn" data-tab="tab-ratios"><i class="fa-solid fa-scale-balanced"></i> Financial Ratios</button>
+            <button class="tab-btn" data-tab="tab-analytics"><i class="fa-solid fa-network-wired"></i> Data Analytics Workbench</button>
+        </nav>
+
+        <!-- Tab Contents Container -->
+        <main class="content-area">
+            
+            <!-- TAB 1: OVERVIEW & PRICE CHART -->
+            <div class="tab-content active" id="tab-overview">
+                <div class="grid-2col">
+                    <div class="card card-glow">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-chart-line"></i> Historical Stock Price & Trading Volume</h3>
+                            <div class="btn-group-sm" id="timeframeSelector">
+                                <button class="btn-chip" data-period="1M">1M</button>
+                                <button class="btn-chip" data-period="6M">6M</button>
+                                <button class="btn-chip active" data-period="1Y">1Y</button>
+                                <button class="btn-chip" data-period="5Y">5Y</button>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="priceChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-bullseye"></i> Executive Financial Snapshot</h3>
+                        </div>
+                        <div class="snapshot-list">
+                            <div class="snap-item">
+                                <span class="snap-label">Revenue (TTM)</span>
+                                <span class="snap-val" id="snapRev">$383.29 B</span>
+                            </div>
+                            <div class="snap-item">
+                                <span class="snap-label">Gross Margin</span>
+                                <span class="snap-val" id="snapGrossMargin">44.13%</span>
+                            </div>
+                            <div class="snap-item">
+                                <span class="snap-label">Operating Margin</span>
+                                <span class="snap-val" id="snapOpMargin">29.82%</span>
+                            </div>
+                            <div class="snap-item">
+                                <span class="snap-label">Net Profit Margin</span>
+                                <span class="snap-val" id="snapNetMargin">25.31%</span>
+                            </div>
+                            <div class="snap-item">
+                                <span class="snap-label">Return on Equity (ROE)</span>
+                                <span class="snap-val" id="snapROE">147.25%</span>
+                            </div>
+                            <div class="snap-item">
+                                <span class="snap-label">Return on Assets (ROA)</span>
+                                <span class="snap-val" id="snapROA">27.51%</span>
+                            </div>
+                            <div class="snap-item">
+                                <span class="snap-label">Total Debt</span>
+                                <span class="snap-val" id="snapDebt">$108.04 B</span>
+                            </div>
+                            <div class="snap-item">
+                                <span class="snap-label">Total Cash & Equiv.</span>
+                                <span class="snap-val" id="snapCash">$61.55 B</span>
+                            </div>
+                            <div class="snap-item">
+                                <span class="snap-label">Analyst Target Price</span>
+                                <span class="snap-val txt-highlight" id="snapTarget">$205.00 (+10.3%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: 3-STATEMENT MODEL -->
+            <div class="tab-content" id="tab-statements">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-file-contract"></i> Historical Financial Filings & 3-Statement Link</h3>
+                        <div class="btn-group-sm" id="statementSelector">
+                            <button class="btn-chip active" data-stmt="income">Income Statement</button>
+                            <button class="btn-chip" data-stmt="balance">Balance Sheet</button>
+                            <button class="btn-chip" data-stmt="cashflow">Cash Flow Statement</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table" id="statementTable">
+                            <!-- Populated dynamically -->
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: DCF VALUATION & SENSITIVITY MATRIX -->
+            <div class="tab-content" id="tab-dcf">
+                <div class="grid-2col-unequal">
+                    <!-- Controls -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-sliders"></i> DCF Valuation Parameters</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>Baseline Free Cash Flow ($B): <span class="slider-val" id="dcfFcfVal">$99.58 B</span></label>
+                            <input type="range" id="dcfFcfSlider" min="1" max="300" step="0.5" value="99.58">
+                        </div>
+                        <div class="form-group">
+                            <label>5-Year FCF Growth Rate (%): <span class="slider-val" id="dcfGrowthVal">8.5%</span></label>
+                            <input type="range" id="dcfGrowthSlider" min="0" max="35" step="0.5" value="8.5">
+                        </div>
+                        <div class="form-group">
+                            <label>Discount Rate / WACC (%): <span class="slider-val" id="dcfWaccVal">9.0%</span></label>
+                            <input type="range" id="dcfWaccSlider" min="5" max="18" step="0.25" value="9.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Perpetual Terminal Growth (g) (%): <span class="slider-val" id="dcfGVal">2.5%</span></label>
+                            <input type="range" id="dcfGSlider" min="1" max="5" step="0.1" value="2.5">
+                        </div>
+
+                        <div class="dcf-summary-box">
+                            <div class="summary-row">
+                                <span>Implied Enterprise Value:</span>
+                                <strong id="dcfEvRes">$2,950 B</strong>
+                            </div>
+                            <div class="summary-row">
+                                <span>Net Debt Adjustment:</span>
+                                <strong id="dcfNetDebtRes">-$46.49 B</strong>
+                            </div>
+                            <div class="summary-row">
+                                <span>Implied Equity Value:</span>
+                                <strong id="dcfEquityRes">$2,903.51 B</strong>
+                            </div>
+                            <div class="summary-row highlight-row">
+                                <span>Fair Value per Share:</span>
+                                <strong id="dcfFairValue">$186.72</strong>
+                            </div>
+                            <div class="summary-row">
+                                <span>Implied Upside / Downside:</span>
+                                <strong id="dcfUpside" class="txt-success">+0.47%</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visuals & 2D Matrix -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-border-all"></i> 2D Sensitivity Matrix (WACC vs Terminal Growth g)</h3>
+                        </div>
+                        <p class="card-sub">Implied Fair Value per Share across discount rates and perpetual growth assumptions ($/Share)</p>
+                        <div class="matrix-responsive">
+                            <table class="matrix-table" id="dcfSensitivityMatrix">
+                                <!-- Generated Dynamically -->
+                            </table>
+                        </div>
+                        <div class="chart-wrapper-sm">
+                            <canvas id="dcfCashflowChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: LBO SPONSOR RETURNS -->
+            <div class="tab-content" id="tab-lbo">
+                <div class="grid-2col">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-calculator"></i> LBO Deal Structure & Inputs</h3>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-6">
+                                <label>Target LTM EBITDA ($B):</label>
+                                <input type="number" id="lboEbitda" value="130.0" step="1.0">
+                            </div>
+                            <div class="form-group col-6">
+                                <label>Entry EV / EBITDA Multiple:</label>
+                                <input type="number" id="lboEntryMult" value="12.0" step="0.5">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-6">
+                                <label>Exit EV / EBITDA Multiple:</label>
+                                <input type="number" id="lboExitMult" value="12.5" step="0.5">
+                            </div>
+                            <div class="form-group col-6">
+                                <label>Debt Financing Leverage (%):</label>
+                                <input type="range" id="lboDebtSlider" min="20" max="85" step="5" value="60">
+                                <span class="slider-val" id="lboDebtVal">60%</span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-6">
+                                <label>Holding Period (Years):</label>
+                                <input type="range" id="lboYearsSlider" min="3" max="7" step="1" value="5">
+                                <span class="slider-val" id="lboYearsVal">5 Years</span>
+                            </div>
+                            <div class="form-group col-6">
+                                <label>EBITDA Annual CAGR (%):</label>
+                                <input type="range" id="lboCagrSlider" min="0" max="25" step="0.5" value="6.5">
+                                <span class="slider-val" id="lboCagrVal">6.5%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-trophy"></i> Sponsor Return Metrics</h3>
+                        </div>
+                        <div class="return-metrics-grid">
+                            <div class="metric-box">
+                                <div class="m-label">Entry Enterprise Value</div>
+                                <div class="m-val" id="lboEntryEv">$1,560 B</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="m-label">Sponsor Equity Check</div>
+                                <div class="m-val" id="lboEquityCheck">$624 B</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="m-label">Exit Equity Value</div>
+                                <div class="m-val" id="lboExitEquity">$1,438 B</div>
+                            </div>
+                            <div class="metric-box highlight-box">
+                                <div class="m-label">Multiple on Invested Capital (MoIC)</div>
+                                <div class="m-val" id="lboMoic">2.30x</div>
+                            </div>
+                            <div class="metric-box highlight-box">
+                                <div class="m-label">Sponsor Net IRR (%)</div>
+                                <div class="m-val txt-success" id="lboIrr">18.1%</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="m-label">Hurdle Target Status</div>
+                                <div class="m-val" id="lboHurdleStatus"><span class="badge badge-success">Target Met</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: M&A ACCRETION/DILUTION -->
+            <div class="tab-content" id="tab-ma">
+                <div class="grid-2col">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-handshake"></i> Transaction Assumptions</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>Target Acquisition EV ($B):</label>
+                            <input type="number" id="maTargetEv" value="25.0" step="1.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Target Net Income ($M):</label>
+                            <input type="number" id="maTargetNi" value="1200.0" step="50.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Equity Consideration (%): <span class="slider-val" id="maEquityPctVal">40%</span></label>
+                            <input type="range" id="maEquityPctSlider" min="0" max="100" step="5" value="40">
+                        </div>
+                        <div class="form-group">
+                            <label>Pre-Tax Synergies ($M/Yr):</label>
+                            <input type="number" id="maSynergies" value="350.0" step="25.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Debt Financing Interest Rate (%):</label>
+                            <input type="number" id="maInterestRate" value="6.0" step="0.25">
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-scale-unbalanced-flip"></i> Pro-Forma Impact Analysis</h3>
+                        </div>
+                        <div class="ma-results-container">
+                            <div class="ma-row">
+                                <span>Buyer Standalone EPS:</span>
+                                <strong id="maBuyerEps">$6.43</strong>
+                            </div>
+                            <div class="ma-row">
+                                <span>New Shares Issued for Acquisition:</span>
+                                <strong id="maNewShares">53.8 M</strong>
+                            </div>
+                            <div class="ma-row">
+                                <span>Annual After-Tax Interest Expense:</span>
+                                <strong id="maAfterTaxInterest">$711.0 M</strong>
+                            </div>
+                            <div class="ma-row">
+                                <span>Pro-Forma Net Income:</span>
+                                <strong id="maProFormaNi">$101.4 B</strong>
+                            </div>
+                            <div class="ma-row highlight-row">
+                                <span>Pro-Forma Combined EPS:</span>
+                                <strong id="maProFormaEps">$6.50</strong>
+                            </div>
+                            <div class="ma-row highlight-row">
+                                <span>Accretion / (Dilution) %:</span>
+                                <strong id="maAccretionPct" class="txt-success">+1.09% (Accretive)</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: DUPONT ROE ANALYSIS -->
+            <div class="tab-content" id="tab-dupont">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-sitemap"></i> DuPont 3-Stage & 5-Stage ROE Decomposition</h3>
+                    </div>
+                    <div class="dupont-tree">
+                        <div class="dupont-main-node">
+                            <div class="node-title">Return on Equity (ROE)</div>
+                            <div class="node-val" id="dupontRoe">147.25%</div>
+                        </div>
+                        <div class="dupont-connector"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="dupont-branches">
+                            <div class="dupont-branch-card">
+                                <div class="branch-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+                                <div class="branch-title">Net Profit Margin</div>
+                                <div class="branch-val" id="dupontNetMargin">25.31%</div>
+                                <div class="branch-sub">Net Income / Revenue</div>
+                            </div>
+                            <div class="dupont-multiplier">×</div>
+                            <div class="dupont-branch-card">
+                                <div class="branch-icon"><i class="fa-solid fa-rotate"></i></div>
+                                <div class="branch-title">Asset Turnover</div>
+                                <div class="branch-val" id="dupontAssetTurnover">1.09x</div>
+                                <div class="branch-sub">Revenue / Total Assets</div>
+                            </div>
+                            <div class="dupont-multiplier">×</div>
+                            <div class="dupont-branch-card">
+                                <div class="branch-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                                <div class="branch-title">Equity Multiplier</div>
+                                <div class="branch-val" id="dupontEquityMult">5.33x</div>
+                                <div class="branch-sub">Total Assets / Shareholder Equity</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dupont-commentary card-sub" id="dupontCommentary">
+                        <strong>Strategic Diagnostic:</strong> High ROE is primarily driven by strong net margins combined with high financial leverage and equity buyback structure.
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 7: MONTE CARLO RISK SIMULATION -->
+            <div class="tab-content" id="tab-monte-carlo">
+                <div class="grid-2col-unequal">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-gears"></i> Simulation Parameters</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>Number of Iterations:</label>
+                            <select id="mcSimCount">
+                                <option value="500">500 Iterations</option>
+                                <option value="1000" selected>1,000 Iterations</option>
+                                <option value="2500">2,500 Iterations</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Revenue Growth Volatility (Std Dev %):</label>
+                            <input type="number" id="mcGrowthStd" value="3.5" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label>WACC Volatility (Std Dev %):</label>
+                            <input type="number" id="mcWaccStd" value="1.0" step="0.1">
+                        </div>
+                        <button id="runMonteCarloBtn" class="btn-primary btn-block"><i class="fa-solid fa-play"></i> Run Simulation</button>
+
+                        <div class="mc-stats-box">
+                            <div class="summary-row">
+                                <span>Mean Implied Share Price:</span>
+                                <strong id="mcMeanPrice">$187.10</strong>
+                            </div>
+                            <div class="summary-row">
+                                <span>Median Share Price (50th %):</span>
+                                <strong id="mcMedianPrice">$186.50</strong>
+                            </div>
+                            <div class="summary-row">
+                                <span>5th Percentile (Value at Risk):</span>
+                                <strong id="mcVarPrice" class="txt-danger">$152.80</strong>
+                            </div>
+                            <div class="summary-row">
+                                <span>95th Percentile Upside:</span>
+                                <strong id="mcUpsidePrice" class="txt-success">$224.10</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-chart-simple"></i> Valuation Stochastic Distribution</h3>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="monteCarloChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 8: BLACK-SCHOLES OPTIONS ENGINE -->
+            <div class="tab-content" id="tab-options">
+                <div class="grid-2col">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-chess"></i> Option Contract Inputs</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>Strike Price ($):</label>
+                            <input type="number" id="optionStrike" value="185.0" step="1.0">
+                        </div>
+                        <div class="form-group">
+                            <label>Days to Expiration (DTE): <span class="slider-val" id="optionDteVal">45 Days</span></label>
+                            <input type="range" id="optionDteSlider" min="1" max="365" value="45">
+                        </div>
+                        <div class="form-group">
+                            <label>Implied Volatility (IV %): <span class="slider-val" id="optionIvVal">26%</span></label>
+                            <input type="range" id="optionIvSlider" min="5" max="120" value="26">
+                        </div>
+                        <div class="form-group">
+                            <label>Risk-Free Interest Rate (%):</label>
+                            <input type="number" id="optionRate" value="4.5" step="0.1">
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-cubes"></i> Pricing & Option Greeks</h3>
+                        </div>
+                        <div class="grid-2col-sm">
+                            <div class="metric-box highlight-box">
+                                <div class="m-label">Call Option Premium</div>
+                                <div class="m-val txt-success" id="optionCallPx">$7.42</div>
+                            </div>
+                            <div class="metric-box highlight-box">
+                                <div class="m-label">Put Option Premium</div>
+                                <div class="m-val txt-danger" id="optionPutPx">$5.58</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="m-label">Delta (Δ)</div>
+                                <div class="m-val" id="greekDelta">0.542</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="m-label">Gamma (Γ)</div>
+                                <div class="m-val" id="greekGamma">0.024</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="m-label">Vega (ν)</div>
+                                <div class="m-val" id="greekVega">0.248</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="m-label">Theta (θ)</div>
+                                <div class="m-val" id="greekTheta">-0.068</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 9: FINANCIAL RATIOS SUITE -->
+            <div class="tab-content" id="tab-ratios">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-list-check"></i> Multi-Dimensional Ratio Diagnostic Matrix</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table" id="ratiosTable">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Metric</th>
+                                    <th>Value</th>
+                                    <th>Industry Benchmark</th>
+                                    <th>Assessment</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ratiosTbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 10: DATA ANALYTICS WORKBENCH -->
+            <div class="tab-content" id="tab-analytics">
+                <div class="grid-2col">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-cloud-arrow-up"></i> Data Source & Custom CSV Upload</h3>
+                        </div>
+                        <div class="file-upload-zone" id="uploadDropzone">
+                            <i class="fa-solid fa-file-csv upload-icon"></i>
+                            <p>Drag & drop custom financial or churn dataset CSV here, or browse files</p>
+                            <input type="file" id="csvFileInput" accept=".csv" class="file-input-hidden">
+                            <button class="btn-outline" id="browseFileBtn"><i class="fa-solid fa-folder-open"></i> Select CSV File</button>
+                        </div>
+                        <div class="dataset-meta" id="datasetMeta">
+                            <span class="badge badge-ticker">Active Dataset: Apple Inc. Financial Series</span>
+                            <span>Rows: <strong id="dsRows">120</strong> | Cols: <strong id="dsCols">8</strong></span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Automated Diagnostics & Quality Profile</h3>
+                        </div>
+                        <div class="diag-grid">
+                            <div class="diag-item">
+                                <span class="d-label">Data Completeness:</span>
+                                <strong id="diagCompleteness" class="txt-success">100.0%</strong>
+                            </div>
+                            <div class="diag-item">
+                                <span class="d-label">Outlier Count (1.5x IQR):</span>
+                                <strong id="diagOutliers">4 features flagged</strong>
+                            </div>
+                            <div class="diag-item">
+                                <span class="d-label">Missing Cells Imputed:</span>
+                                <strong>0 cells</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2col mt-20">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-square-nought-cross"></i> Feature Correlation Matrix</h3>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="correlationChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-chart-column"></i> Feature Importance & Predictive Ranking</h3>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="importanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Apex Institutional Financial Intelligence Engine & Analytics Studio &copy; 2026. Powered by Advanced Financial Modeling Algorithms.</p>
+        </footer>
+    </div>
+
+    <!-- Application Script -->
+    <script src="app.js"></script>
+</body>
+</html>
