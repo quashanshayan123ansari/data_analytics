@@ -243,30 +243,41 @@ body {
     gap: 8px;
 }
 
-/* QUICK TICKERS */
-.quick-tickers {
+/* NAVBAR RIGHT CONTROLS & LIVE MARKET STATUS BAR */
+.navbar-right-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.market-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-chip {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    color: var(--text-muted);
     display: flex;
     align-items: center;
     gap: 6px;
-    flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    white-space: nowrap;
 }
 
-.ticker-chip {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border-color);
-    padding: 5px 10px;
-    border-radius: 6px;
-    font-size: 11.5px;
-    font-weight: 600;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: var(--transition);
+.status-chip strong {
+    color: var(--text-main);
+    font-weight: 700;
 }
 
-.ticker-chip:hover {
-    background: rgba(56, 189, 248, 0.15);
-    border-color: var(--cyan);
-    color: var(--cyan);
+.quick-model-shortcuts {
+    display: flex;
+    gap: 6px;
 }
 
 /* ----------------- COMPANY BANNER ----------------- */

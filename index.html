@@ -35,14 +35,18 @@
                 <div class="search-suggestions-dropdown" id="searchSuggestions"></div>
             </div>
 
-            <div class="quick-tickers">
-                <span class="ticker-chip" data-ticker="AAPL">AAPL</span>
-                <span class="ticker-chip" data-ticker="NVDA">NVDA</span>
-                <span class="ticker-chip" data-ticker="TSLA">TSLA</span>
-                <span class="ticker-chip" data-ticker="MSFT">MSFT</span>
-                <span class="ticker-chip" data-ticker="AMZN">AMZN</span>
-                <span class="ticker-chip" data-ticker="RELIANCE.NS">RELIANCE</span>
-                <span class="ticker-chip" data-ticker="TATAMOTORS.NS">TATA MOTORS</span>
+            <!-- Live Global Market Indices & Quick Model Shortcuts -->
+            <div class="navbar-right-controls">
+                <div class="market-status-bar">
+                    <span class="status-chip"><i class="fa-solid fa-arrow-trend-up txt-success"></i> S&P 500 <strong>5,620.40</strong></span>
+                    <span class="status-chip"><i class="fa-solid fa-arrow-trend-up txt-success"></i> NASDAQ <strong>17,680.15</strong></span>
+                    <span class="status-chip"><i class="fa-solid fa-globe txt-highlight"></i> NIFTY 50 <strong>24,850.20</strong></span>
+                </div>
+                <div class="quick-model-shortcuts">
+                    <button class="btn-chip" id="quickDcfBtn"><i class="fa-solid fa-arrow-trend-up"></i> DCF</button>
+                    <button class="btn-chip" id="quickLboBtn"><i class="fa-solid fa-handshake-simple"></i> LBO</button>
+                    <button class="btn-chip" id="quickMonteBtn"><i class="fa-solid fa-dice"></i> Monte Carlo</button>
+                </div>
             </div>
         </header>
 

@@ -472,11 +472,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    function switchTab(tabId) {
+        const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+        if (btn) btn.click();
+    }
+
+    const quickDcfBtn = document.getElementById('quickDcfBtn');
+    const quickLboBtn = document.getElementById('quickLboBtn');
+    const quickMonteBtn = document.getElementById('quickMonteBtn');
+
+    if (quickDcfBtn) quickDcfBtn.addEventListener('click', () => switchTab('tab-dcf'));
+    if (quickLboBtn) quickLboBtn.addEventListener('click', () => switchTab('tab-lbo'));
+    if (quickMonteBtn) quickMonteBtn.addEventListener('click', () => switchTab('tab-monte-carlo'));
+
     // ----------------- SEARCH ENGINE & AUTOCOMPLETE DROPDOWN -----------------
     const searchInput = document.getElementById('companySearchInput');
     const searchBtn = document.getElementById('searchBtn');
     const suggestionsDropdown = document.getElementById('searchSuggestions');
-    const tickerChips = document.querySelectorAll('.ticker-chip');
 
     let debounceTimer = null;
     let selectedSuggIndex = -1;
